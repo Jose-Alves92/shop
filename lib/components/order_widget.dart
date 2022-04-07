@@ -1,18 +1,17 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shop/models/order_model.dart';
 
-class OrderComponent extends StatefulWidget {
+class OrderWidget extends StatefulWidget {
   final OrderModel order;
-  const OrderComponent({Key? key, required this.order}) : super(key: key);
+  const OrderWidget({Key? key, required this.order}) : super(key: key);
 
   @override
-  State<OrderComponent> createState() => _OrderComponentState();
+  State<OrderWidget> createState() => _OrderWidgetState();
 }
 
-class _OrderComponentState extends State<OrderComponent> {
+class _OrderWidgetState extends State<OrderWidget> {
   bool _expanded = false;
   @override
   Widget build(BuildContext context) {

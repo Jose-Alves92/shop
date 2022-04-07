@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shop/utils/app_routes.dart';
 
-class AppDrawerComponent extends StatelessWidget {
-  const AppDrawerComponent({ Key? key }) : super(key: key);
+class AppDrawerWidget extends StatelessWidget {
+  const AppDrawerWidget({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
