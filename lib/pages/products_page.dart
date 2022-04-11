@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/components/app_drawer_widget.dart';
 import 'package:shop/components/product_item_widget.dart';
 import 'package:shop/models/products_list_model.dart';
+import 'package:shop/utils/app_routes.dart';
 
 class ProductsPage extends StatelessWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -14,7 +15,9 @@ class ProductsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Gerenciar Produtos'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.add))
+          IconButton(onPressed: () {
+            Navigator.of(context).pushNamed(AppRoutes.PRODUCT_FORM);
+          }, icon: const Icon(Icons.add))
         ],
       ),
       drawer: const AppDrawerWidget(),
@@ -24,7 +27,7 @@ class ProductsPage extends StatelessWidget {
           itemCount: products.itemsCount,
           itemBuilder: (ctx, index) => Column(
             children: [
-              ProductItemWidget(products: products.items[index]),
+              ProductItemWidget(product: products.items[index]),
               const Divider(),
             ],
           ),
