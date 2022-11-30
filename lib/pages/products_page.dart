@@ -7,6 +7,9 @@ import 'package:shop/utils/app_routes.dart';
 
 class ProductsPage extends StatelessWidget {
   const ProductsPage({Key? key}) : super(key: key);
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<ProductsList>(context, listen: false).loadProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +24,18 @@ class ProductsPage extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawerWidget(),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: products.itemsCount,
-          itemBuilder: (ctx, index) => Column(
-            children: [
-              ProductItemWidget(product: products.items[index]),
-              const Divider(),
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: products.itemsCount,
+            itemBuilder: (ctx, index) => Column(
+              children: [
+                ProductItemWidget(product: products.items[index]),
+                const Divider(),
+              ],
+            ),
           ),
         ),
       ),

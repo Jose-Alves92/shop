@@ -1,20 +1,51 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:shop/data/dummy_data.dart';
+import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/models/product_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/utils/constants.dart';
 
 class ProductsList with ChangeNotifier {
-  List<Product> _items = dummyProducts;
+  final String _token;
+  final String _userId;
+  List<Product> _items = [];
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((product) => product.isFavorite).toList();
 
+  ProductsList([this._token = '', this._userId = '', this._items = const [],]);
+
   int get itemsCount {
     return _items.length;
   }
 
-  void saveProduct(Map<String, Object> data) {
+  Future<void> loadProducts() async {
+    _items.clear();
+    final responde = await http.get(Uri.parse('${Constants.PRODUCT_BASE_URL}.json?auth=$_token'));
+    if (responde.body == "null") return;
+    final favResponse = await http.get(Uri.parse('${Constants.USER_FAVORITES_URL}/$_userId.json?auth=$_token'));
+    Map<String, dynamic> favData = favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
+    Map<String, dynamic> data = jsonDecode(responde.body);
+    data.forEach((key, value) {
+    final isFavorite = favData[key] ?? false;
+      _items.add(
+        Product(
+          id: key,
+          name: value['name'],
+          description: value['description'],
+          price: value['price'],
+          imageUrl: value['imageUrl'],
+          isFavorite: isFavorite,
+         
+        ),
+      );
+    });
+    notifyListeners();
+  }
+
+  Future<void> saveProduct(Map<String, Object> data) {
     bool hasId = data['id'] != null;
 
     final product = Product(
@@ -26,30 +57,73 @@ class ProductsList with ChangeNotifier {
     );
 
     if (hasId) {
-      updateProduct(product);
+      return updateProduct(product);
     } else {
-      addProduct(product);
+      return addProduct(product);
     }
   }
 
-  void addProduct(Product product) {
-    _items.add(product);
+  Future<void> addProduct(Product product) async {
+    final response = await http.post(
+      Uri.parse('${Constants.PRODUCT_BASE_URL}.json?auth=$_token'),
+      body: jsonEncode({
+        "name": product.name,
+        "description": product.description,
+        "price": product.price,
+        "imageUrl": product.imageUrl,
+        
+      }),
+    );
+
+    final id = jsonDecode(response.body)['name'];
+    _items.add(
+      Product(
+        id: id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+       
+      ),
+    );
     notifyListeners();
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     int index = _items.indexWhere((element) => element.id == product.id);
     if (index >= 0) {
+      await http.patch(
+        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$_token'),
+        body: jsonEncode({
+          "name": product.name,
+          "description": product.description,
+          "price": product.price,
+          "imageUrl": product.imageUrl,
+        }),
+      );
       _items[index] = product;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  void removeProduct(Product product) {
+  Future<void> removeProduct(Product product) async {
     int index = _items.indexWhere((element) => element.id == product.id);
+
     if (index >= 0) {
-      _items.removeWhere((element) => element.id == product.id);
+      final product = _items[index];
+      _items.remove(product);
+      notifyListeners();
+
+      final response = await http.delete(Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json?auth=$_token'));
+
+      if (response.statusCode >= 400) {
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException(
+          msg: 'Não foi possível excluir o produto.',
+          statusCode: response.statusCode,
+        );
+      }
     }
-    notifyListeners();
   }
 }

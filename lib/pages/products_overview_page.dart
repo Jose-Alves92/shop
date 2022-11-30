@@ -4,6 +4,7 @@ import 'package:shop/components/app_drawer_widget.dart';
 import 'package:shop/components/bedge_widget.dart';
 import 'package:shop/components/product_grid_widget.dart';
 import 'package:shop/models/cart_model.dart';
+import 'package:shop/models/products_list_model.dart';
 import 'package:shop/utils/app_routes.dart';
 
 enum FilterOptions {
@@ -20,6 +21,19 @@ class ProductsOverviewPage extends StatefulWidget {
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductsList>(context, listen: false)
+        .loadProducts()
+        .then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +70,11 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
           Consumer<Cart>(
             child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(AppRoutes.CART);
-                },
-                icon: const Icon(Icons.shopping_cart),
-              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.CART);
+              },
+              icon: const Icon(Icons.shopping_cart),
+            ),
             builder: (ctx, cart, child) => BadgeWidget(
               value: cart.itemCount.toString(),
               child: child!,
@@ -68,9 +82,11 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
         ],
       ),
-      body: ProductGridWidget(
-        showFavoriteOnly: _showFavoriteOnly,
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ProductGridWidget(
+              showFavoriteOnly: _showFavoriteOnly,
+            ),
       drawer: const AppDrawerWidget(),
     );
   }
