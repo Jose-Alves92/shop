@@ -25,16 +25,26 @@ class ProductGridItemWidget extends StatelessWidget {
               arguments: product,
             );
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: const AssetImage(
+                  'assets/images/productplaceholder-210824-225547.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
+          // child: Image.network(
+          //   product.imageUrl,
+          //   fit: BoxFit.cover,
+          // ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
           leading: Consumer<Product>(
             builder: (ctx, product, _) => IconButton(
-              onPressed: () => product.toggleFavorite(auth.token ?? '', auth.userId ?? ''),
+              onPressed: () =>
+                  product.toggleFavorite(auth.token ?? '', auth.userId ?? ''),
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               color: Theme.of(context).colorScheme.secondary,
@@ -50,7 +60,10 @@ class ProductGridItemWidget extends StatelessWidget {
               cart.addItem(product);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Produto adicionado com sucesso!', style: TextStyle(fontSize: 12),),
+                  content: const Text(
+                    'Produto adicionado com sucesso!',
+                    style: TextStyle(fontSize: 12),
+                  ),
                   duration: const Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'DESFAZER',

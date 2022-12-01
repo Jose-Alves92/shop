@@ -14,6 +14,7 @@ import 'package:shop/pages/product_detail_page.dart';
 import 'package:shop/pages/product_form_page.dart';
 import 'package:shop/pages/products_page.dart';
 import 'package:shop/utils/app_routes.dart';
+import 'package:shop/utils/custom_route.dart';
 
 void main() {
   // min<double>(500.0, 800.0);
@@ -33,13 +34,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthModel, ProductsList>(
           create: (_) => ProductsList(),
           update: (ctx, auth, previous) {
-            return ProductsList(auth.token ?? '', auth.userId ?? '', previous?.items ?? []);
+            return ProductsList(
+                auth.token ?? '', auth.userId ?? '', previous?.items ?? []);
           },
         ),
         ChangeNotifierProxyProvider<AuthModel, OrderListModel>(
           create: (_) => OrderListModel(),
           update: (context, value, previous) {
-            return OrderListModel(value.token ?? '',value.userId ?? '', previous?.items ?? []);
+            return OrderListModel(
+                value.token ?? '', value.userId ?? '', previous?.items ?? []);
           },
         ),
         ChangeNotifierProvider(create: (_) => Cart()),
@@ -47,16 +50,21 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Shop',
         theme: theme.copyWith(
-          colorScheme: theme.colorScheme.copyWith(
-            primary: Colors.purple,
-            secondary: Colors.red,
-          ),
-          textTheme: const TextTheme(
-            headline1: TextStyle(fontFamily: 'Lato'),
-            headline2: TextStyle(
-                fontFamily: 'Anton', fontSize: 10, color: Colors.white),
-          ),
-        ),
+            colorScheme: theme.colorScheme.copyWith(
+              primary: Colors.purple,
+              secondary: Colors.red,
+            ),
+            textTheme: const TextTheme(
+              headline1: TextStyle(fontFamily: 'Lato'),
+              headline2: TextStyle(
+                  fontFamily: 'Anton', fontSize: 10, color: Colors.white),
+            ),
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.iOS: CustomPageTransitionsBuilder(),
+                TargetPlatform.android: CustomPageTransitionsBuilder(),
+              },
+            )),
         // home: const ProductsOverviewPage(),
         debugShowCheckedModeBanner: false,
         routes: {

@@ -14,7 +14,8 @@ class AuthForm extends StatefulWidget {
   State<AuthForm> createState() => _AuthFormState();
 }
 
-class _AuthFormState extends State<AuthForm> {
+class _AuthFormState extends State<AuthForm>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   AuthMode _authMode = AuthMode.Login;
@@ -24,15 +25,52 @@ class _AuthFormState extends State<AuthForm> {
     'password': '',
   };
 
+  AnimationController? _controller;
+  Animation<double>? _opacityAnimation;
+  Animation<Offset>? _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 300,
+      ),
+    );
+    _opacityAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller!,
+      curve: Curves.linear,
+    ));
+    _slideAnimation = Tween(
+      begin: const Offset(0, -1.5),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: _controller!,
+      curve: Curves.linear,
+    ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+
   bool _isLogin() => _authMode == AuthMode.Login;
-  bool _isSignup() => _authMode == AuthMode.Signup;
+  //bool _isSignup() => _authMode == AuthMode.Signup;
 
   void _switchAuthMode() {
     setState(() {
       if (_isLogin()) {
         _authMode = AuthMode.Signup;
+        _controller?.forward();
       } else {
         _authMode = AuthMode.Login;
+        _controller?.reverse();
       }
     });
   }
@@ -87,9 +125,11 @@ class _AuthFormState extends State<AuthForm> {
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
         padding: const EdgeInsets.all(16),
-        height: 320,
+        height: _isLogin() ? 310 : 400,
         width: deviceSize.width * 0.75,
         child: Form(
           key: _formKey,
@@ -123,21 +163,34 @@ class _AuthFormState extends State<AuthForm> {
                   }
                 },
               ),
-              if (_isSignup())
-                TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'Confirmar Senha'),
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  validator: (_password) {
-                    final password = _password ?? '';
-                    if (password != _passwordController.text) {
-                      return 'Senhas informadas não conferem.';
-                    } else {
-                      return null;
-                    }
-                  },
+              AnimatedContainer(
+                constraints: BoxConstraints(
+                  minHeight: _isLogin() ? 0 : 60,
+                  maxHeight: _isLogin() ? 0 : 120,
                 ),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.linear,
+                child: SlideTransition(
+                  position: _slideAnimation!,
+                  child: FadeTransition(
+                    opacity: _opacityAnimation!,
+                    child: TextFormField(
+                      decoration:
+                          const InputDecoration(labelText: 'Confirmar Senha'),
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      validator: (_password) {
+                        final password = _password ?? '';
+                        if (password != _passwordController.text) {
+                          return 'Senhas informadas não conferem.';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: 20,
               ),

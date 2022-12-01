@@ -32,8 +32,8 @@ class AuthModel with ChangeNotifier {
 
   Future<void> _authenticate(
       String email, String password, String urlFragment) async {
-    final _url = Constants(urlFragment: urlFragment);
-    final response = await http.post(Uri.parse(_url.authenticatorUrl()),
+    final _url = Constants.AUTHENTICATOR_URL(urlFragment);
+    final response = await http.post(Uri.parse(_url),
         body: jsonEncode({
           'email': email,
           'password': password,
