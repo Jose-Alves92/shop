@@ -49,7 +49,7 @@ class AppDrawerWidget extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.exit_to_app),
-            title: const Text('Gerenciar Produtos',
+            title: const Text('Sair',
                 style: TextStyle(color: Colors.black)),
             onTap: () {
               Provider.of<AuthModel>(context, listen: false).logout();

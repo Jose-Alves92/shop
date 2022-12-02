@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/exceptions/auth_exception.dart';
@@ -109,6 +107,7 @@ class _AuthFormState extends State<AuthForm>
       } else {
         // Requisição Signup
         await _auth.signup(_AuthData['email']!, _AuthData['password']!);
+      
       }
     } on AuthException catch (error) {
       _showErrorDialog(error.toString());
@@ -150,7 +149,7 @@ class _AuthFormState extends State<AuthForm>
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Senha'),
-                keyboardType: TextInputType.visiblePassword,
+                keyboardType: TextInputType.text,
                 obscureText: true,
                 onSaved: (password) => _AuthData['password'] = password ?? '',
                 controller: _passwordController,
@@ -177,7 +176,7 @@ class _AuthFormState extends State<AuthForm>
                     child: TextFormField(
                       decoration:
                           const InputDecoration(labelText: 'Confirmar Senha'),
-                      keyboardType: TextInputType.visiblePassword,
+                      keyboardType: TextInputType.text,
                       obscureText: true,
                       validator: (_password) {
                         final password = _password ?? '';

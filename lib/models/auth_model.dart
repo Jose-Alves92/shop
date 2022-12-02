@@ -33,12 +33,14 @@ class AuthModel with ChangeNotifier {
   Future<void> _authenticate(
       String email, String password, String urlFragment) async {
     final _url = Constants.AUTHENTICATOR_URL(urlFragment);
-    final response = await http.post(Uri.parse(_url),
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-          'returnSecureToken': true,
-        }));
+    final response = await http.post(
+      Uri.parse(_url),
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'returnSecureToken': true,
+      }),
+    );
 
     final body = jsonDecode(response.body);
 
@@ -65,11 +67,11 @@ class AuthModel with ChangeNotifier {
   }
 
   Future<void> signup(String email, String password) async {
-    return await _authenticate(email, password, 'signUp');
+    await _authenticate(email, password, 'signUp');
   }
 
   Future<void> login(String email, String password) async {
-    return await _authenticate(email, password, 'signInWithPassword');
+    await _authenticate(email, password, 'signInWithPassword');
   }
 
   Future<void> tryAutoLogin() async {
