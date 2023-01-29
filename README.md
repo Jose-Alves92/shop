@@ -5,11 +5,17 @@
 
 Shop é uma aplicação mobile construída durante o **curso de Flutter**, curso organizado pela [COD3R](https://www.cod3r.com.br "Site da Cod3r").
 
+O aplicativo shop é um exemplo de e-commerce mobile com uma tela de registro e login do usuário com persistência por um período de tempo, o que significa que os usuários não precisam fazer login continuamente. No início do aplicativo existe uma grade de produtos, clique nela para ir para os detalhes e você poderá adicionar o produto aos seus favoritos ou adicionar ao carrinho para fazer o pedido. Tem a capacidade de acompanhar pedidos feitos e gerenciar produtos na loja.
 
 # Tecnologias utilizadas
 
 - Dart: 2.13.3
 - Flutter: 2.8.1
+- provider: 6.0.2
+- intl: 0.17.0
+- http: 0.13.5
+- shared_preferences: 2.0.15
+- Firebase - Realtime-database/Authentication
 
 # Como executar o projeto
 
