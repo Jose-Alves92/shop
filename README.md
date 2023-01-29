@@ -1,16 +1,51 @@
-# shop
+# Shop
+![Badge Version](http://img.shields.io/static/v1?label=version&message=1.0.0&color=GREEN&style=fleat)
 
-A new Flutter project.
+# Sobre o projeto
 
-## Getting Started
+Shop é uma aplicação mobile construída durante o **curso de Flutter**, curso organizado pela [COD3R](https://www.cod3r.com.br "Site da Cod3r").
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+# Tecnologias utilizadas
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Dart: 2.13.3
+- Flutter: 2.8.1
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Como executar o projeto
+
+### Pré-requisitos: 
+
+- SDK Flutter instalado
+- Android studio instalado
+
+### Clonar repositório
+```bash
+git clone https://github.com/Jose-Alves92/shop
+```
+
+### Entrar na pasta do projeto
+```bash
+cd shop
+```
+
+### Instalar dependências
+```bash
+flutter pub get
+```
+
+### Executar o projeto
+Para executar o projeto deve ter um device conectado ou device emulator
+```bash
+flutter run
+```
+
+### Criar um release apk
+```bash
+flutter build apk --release
+```
+
+# Autor
+
+José Alves da Costa Filho
+
+https://www.linkedin.com/in/josealves92
