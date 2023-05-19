@@ -135,7 +135,7 @@ class _AuthFormState extends State<AuthForm>
           child: Column(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'E-mail'),
+                decoration: const InputDecoration(labelText: 'E-mail', hintText: 'joãodasilva@gmail.com', ),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (email) => _AuthData['email'] = email ?? '',
                 validator: (_email) {
